@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Dict, Iterable, List, Tuple
+from graphviz import Digraph
+from turtle import dot
 
 from ast_imp import (
     AExp,
@@ -115,3 +117,51 @@ def cfg_to_text(cfg: CFG) -> str:
     for e in cfg.edges:
         lines.append(f"  {e.pretty()}")
     return "\n".join(lines)
+
+
+def cfg_to_graphviz(cfg: CFG, *, name: str = "cfg") -> Digraph:
+    """
+    Convert a CFG into a Graphviz Digraph.
+
+    Rendering conventions:
+    - one node per program label;
+    - the exit node is displayed as '_';
+    - each edge is labelled with:
+          guard
+          action
+    """
+    dot = Digraph(name=name, format="pdf")
+    dot.attr(rankdir="TB", splines="true", nodesep="0.5", ranksep="0.6")
+    dot.attr(
+        "node",
+        shape="circle",
+        fontname="Helvetica",
+        fontsize="12",
+        width="0.55",
+        height="0.55",
+        margin="0.03",
+    )
+    dot.attr("edge", fontname="Helvetica", fontsize="10")
+
+    for node in cfg.nodes():
+        visible = "_" if node == EXIT_LABEL else str(node)
+        attrs = {}
+
+        if node == cfg.entry:
+            attrs.update(style="filled", fillcolor="lightgrey")
+
+        if node == cfg.exit:
+            attrs.update(peripheries="2")
+
+        dot.node(str(node), visible, **attrs)
+
+    for edge in cfg.edges:
+        edge_label = f"{pretty_bexp(edge.guard)}\\n{edge.action.pretty()}"
+        dot.edge(str(edge.src), str(edge.dst), label=edge_label)
+
+    return dot
+
+
+def cmd_to_graphviz(cmd: Cmd, *, name: str = "cfg") -> Digraph:
+    """Convenience wrapper: build the CFG, then render it."""
+    return cfg_to_graphviz(build_cfg(cmd), name=name)
