@@ -2,11 +2,9 @@ from __future__ import annotations
 
 import argparse
 from pprint import pprint
-from turtle import dot
 
 from cfg import build_cfg, cfg_to_text, cmd_to_graphviz
 from coverage import path_coverage, uncovered_decisions_and_conditions
-from examples import ex_gcd_subtractive
 from parser_imp import parse_file
 from sos import run, run_with_trace
 from symbolic import build_symbolic_execution_tree, compare_concrete_and_symbolic, symbolic_tree_to_text
@@ -36,15 +34,15 @@ def main() -> None:
     cfg = build_cfg(cmd)
     print(cfg_to_text(cfg))
     if args.render:
-        dot = cmd_to_graphviz(ex_gcd_subtractive(), name="gcd_cfg")
+        dot = cmd_to_graphviz(cmd, name="cfg")
         try:
             dot.graph_attr.update({'margin': '0', 'pad': '0'})
-            dot.render("gcd_cfg", format="pdf", cleanup=True, quiet=True)            
-            print("PDF written to gcd_cfg.pdf")
+            dot.render("cfg", format="pdf", cleanup=True, quiet=True)
+            print("PDF written to cfg.pdf")
         except ExecutableNotFound:
-            dot.save("gcd_cfg.gv")
+            dot.save("cfg.gv")
             print("Graphviz 'dot' executable not found.")
-            print("I saved the DOT source as gcd_cfg.gv instead.")
+            print("I saved the DOT source as cfg.gv instead.")
 
     print("\n=== Bounded path coverage for singleton test set ===")
     report = path_coverage(cmd, [sigma], args.k)
