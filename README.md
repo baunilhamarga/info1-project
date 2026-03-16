@@ -43,6 +43,11 @@ If the Graphviz executable is not installed, the project still saves the CFG as 
 
 ## Running the Project
 
+> Example `.imp` input files are available in the `examples/` folder.  
+> The `run.sh` script runs all `.imp` examples in `examples/` and saves their outputs as `.out` files.
+ IMP Operational Semantics Project
+
+
 Run the full pipeline on an IMP input file:
 
 ```bash
