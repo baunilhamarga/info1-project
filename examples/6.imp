@@ -1,0 +1,13 @@
+sigma X=8, Y=5
+
+while 1: not (X = Y) do
+begin
+  if 2: X <= Y then
+  begin
+    3: Y := Y - X
+  end
+  else
+  begin
+    4: X := X - Y
+  end
+end

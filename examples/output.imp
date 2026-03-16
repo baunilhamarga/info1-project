@@ -1,0 +1,56 @@
+=== Parsed environment ===
+{'X': 3, 'Y': 0}
+
+=== Concrete execution ===
+final state: {'X': 0, 'Y': 6}
+path: 1.2.3.4.2.3.4.2.3.4.2
+
+=== CFG ===
+entry = 1
+exit = _exit
+edges:
+  1 --[true / Y := 0]--> 2
+  2 --[(not (X = 0)) / skip]--> 3
+  2 --[(not (not (X = 0))) / skip]--> _exit
+  3 --[true / Y := (Y + X)]--> 4
+  4 --[true / X := (X - 1)]--> 2
+PDF written to cfg.pdf
+
+=== Bounded path coverage for singleton test set ===
+all paths: [('1', '2'), ('1', '2', '3', '4', '2')]
+covered paths: [('1', '2'), ('1', '2', '3', '4', '2')]
+coverage rate: 1.0
+
+=== Decision / condition coverage for singleton test set ===
+uncovered decisions: {}
+uncovered conditions: {}
+
+=== Symbolic execution tree ===
+(1, {X -> Var(name='X0'), Y -> Var(name='Y0')}, true, path=())
+  (2, {X -> Var(name='X0'), Y -> Int(value=0)}, true, path=('1',))
+    (3, {X -> Var(name='X0'), Y -> Int(value=0)}, Not(value=Eq(left=Var(name='X0'), right=Int(value=0))), path=('1', '2'))
+      (4, {X -> Var(name='X0'), Y -> Add(left=Int(value=0), right=Var(name='X0'))}, Not(value=Eq(left=Var(name='X0'), right=Int(value=0))), path=('1', '2', '3'))
+        (2, {X -> Sub(left=Var(name='X0'), right=Int(value=1)), Y -> Add(left=Int(value=0), right=Var(name='X0'))}, Not(value=Eq(left=Var(name='X0'), right=Int(value=0))), path=('1', '2', '3', '4'))
+          (3, {X -> Sub(left=Var(name='X0'), right=Int(value=1)), Y -> Add(left=Int(value=0), right=Var(name='X0'))}, Not(value=Eq(left=Var(name='X0'), right=Int(value=0))) and Not(value=Eq(left=Sub(left=Var(name='X0'), right=Int(value=1)), right=Int(value=0))), path=('1', '2', '3', '4', '2'))
+          (_exit, {X -> Sub(left=Var(name='X0'), right=Int(value=1)), Y -> Add(left=Int(value=0), right=Var(name='X0'))}, Not(value=Eq(left=Var(name='X0'), right=Int(value=0))) and Not(value=Not(value=Eq(left=Sub(left=Var(name='X0'), right=Int(value=1)), right=Int(value=0)))), path=('1', '2', '3', '4', '2'))
+    (_exit, {X -> Var(name='X0'), Y -> Int(value=0)}, Not(value=Not(value=Eq(left=Var(name='X0'), right=Int(value=0)))), path=('1', '2'))
+
+=== Concrete vs symbolic ===
+{'concrete_final_state': {'X': 0, 'Y': 6},
+ 'concrete_path': ('1', '2', '3', '4', '2', '3', '4', '2', '3', '4', '2'),
+ 'found_symbolic_path': True,
+ 'symbolic_condition_satisfied_by_input': False,
+ 'symbolic_path_condition': [Not(value=Eq(left=Var(name='X0'),
+                                          right=Int(value=0))),
+                             Not(value=Eq(left=Sub(left=Var(name='X0'),
+                                                   right=Int(value=1)),
+                                          right=Int(value=0))),
+                             Not(value=Eq(left=Sub(left=Sub(left=Var(name='X0'),
+                                                            right=Int(value=1)),
+                                                   right=Int(value=1)),
+                                          right=Int(value=0))),
+                             Not(value=Eq(left=Sub(left=Sub(left=Sub(left=Var(name='X0'),
+                                                                     right=Int(value=1)),
+                                                            right=Int(value=1)),
+                                                   right=Int(value=1)),
+                                          right=Int(value=0)))]}
